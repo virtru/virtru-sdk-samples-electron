@@ -1,6 +1,8 @@
 # Virtru Desktop Encrypt App
 
-##### Written in nodejs using Electron
+#### Written in nodejs using Electron
+
+![Main Window](/images/main-window-screenshot.png)
 
 ### Install
 * Clone repo
