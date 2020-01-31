@@ -88,23 +88,22 @@ function createSettings() {
   })
 }
 
-
+let client;
 function getCreds() {
   //const appId = JSON.parse(fs.readFileSync('.virtru/virtruCreds.json'))['appId'];
   //const email = JSON.parse(fs.readFileSync('.virtru/virtruCreds.json'))['emailAddress'];
-  var { email, appId } = store.get('virtru_creds');
+  const { email, appId } = store.get('virtru_creds');
   return [email, appId];
 }
-// Assign credentials to respective variables.
-var email = getCreds()[0];
-var appId = getCreds()[1];
-var client = new Virtru.Client({email, appId});
 
 function refreshCreds() {
-  email = getCreds()[0];
-  appId = getCreds()[1];
-  client = new Virtru.Client({email, appId});
+  var [email, appId] = getCreds();
+  if (email && email !== '' && appId && appId !== '') {
+    client = new Virtru.Client({email, appId});
+  }
 }
+
+refreshCreds();
 
 
 
