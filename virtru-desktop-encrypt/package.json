@@ -12,6 +12,7 @@
     "electron": "^7.1.10"
   },
   "dependencies": {
+    "glob": "^7.1.6",
     "request": "^2.88.0",
     "virtru-sdk": "^1.6.11"
   }
