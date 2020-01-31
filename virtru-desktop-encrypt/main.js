@@ -1,0 +1,471 @@
+const { app, BrowserWindow } = require('electron');
+const { ipcMain, dialog } = require('electron');
+const glob = require('glob');
+const fs = require('fs');
+const path = require('path');
+const Virtru = require('virtru-sdk');
+const Store = require('./scripts/store.js');
+var request = require('request');
+
+// Keep a global reference of the window object, if you don't, the window will
+// be closed automatically when the JavaScript object is garbage collected.
+let win;
+let settingsPage;
+
+
+const store = new Store({
+  configName: 'user-settings',
+  defaults: {
+    virtru_creds: {
+      email_address: 'example@example.com',
+      app_id: '00000000-0000-0000-0000-000000000000'
+    },
+    windowBounds: {
+      width: 400,
+      height: 700
+    },
+    save_location: {
+      path: 'Unspecified. Files saved to source directory.'
+    }
+  }
+});
+
+
+function createWindow () {
+  let { width, height } = store.get('windowBounds');
+
+  // Create the browser window.
+  win = new BrowserWindow({
+    width: 400,//width,
+    height: 700,//height,
+    webPreferences: {
+      nodeIntegration: true
+    }
+  })
+
+  // and load the index.html of the app.
+  win.loadFile('./pages/index.html')
+
+  // Open the DevTools.
+  //win.webContents.openDevTools()
+
+
+  win.on('resize', () => {
+    // The event doesn't pass us the window size, so we call the `getBounds` method which returns an object with
+    // the height, width, and x and y coordinates.
+    let { width, height } = win.getBounds();
+    // Now that we have them, save them using the `set` method.
+    store.set('windowBounds', { width, height });
+  });
+
+  // Emitted when the window is closed.
+  win.on('closed', () => {
+    // Dereference the window object, usually you would store windows
+    // in an array if your app supports multi windows, this is the time
+    // when you should delete the corresponding element.
+    win = null
+  })
+}
+
+function createSettings() {
+  settingsPage = new BrowserWindow({
+    parent: win,
+    //frame: false,
+    //resizable: false,
+    width: 500,
+    height: 310,
+    webPreferences: {
+      nodeIntegration: true
+    }
+  })
+
+  settingsPage.loadFile('./pages/settings.html');
+  //settingsPage.webContent.openDevTools();
+
+
+  settingsPage.on('closed', () => {
+    settingsPage = null;
+  })
+}
+
+
+function getCreds() {
+  //const appId = JSON.parse(fs.readFileSync('.virtru/virtruCreds.json'))['appId'];
+  //const email = JSON.parse(fs.readFileSync('.virtru/virtruCreds.json'))['emailAddress'];
+  var { email, appId } = store.get('virtru_creds');
+  return [email, appId];
+}
+// Assign credentials to respective variables.
+var email = getCreds()[0];
+var appId = getCreds()[1];
+var client = new Virtru.Client({email, appId});
+
+function refreshCreds() {
+  email = getCreds()[0];
+  appId = getCreds()[1];
+  client = new Virtru.Client({email, appId});
+}
+
+
+
+
+// Generate the Virtru Client
+
+
+//console.log(getCreds());
+let sessionId;
+function requestAuthCode(email) {
+  var optionsRequest = {
+    url: 'https://api.virtru.com/accounts/api/code-login',
+    json: {
+      "userId": email
+    },
+    headers: {
+      "X-Virtru-Client": 'secure-reader:6.47.0',
+      'origin': 'https://secure.virtru.com',
+      "content-type": "application/json",
+      'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36'
+    }
+  };
+    //console.log(optionsRequest);
+  request.post(optionsRequest, (error, response, body) => {
+    //console.log(error);
+    //console.log(response);
+    //console.log(body);
+    if (body['error']) {
+      dialog.showErrorBox('Too Many Attempts', "You're doing that too much. Please wait 30 minutes before requesting a new AppId.");
+      settingsPage.webContents.send('max-codes-error');
+    } else {
+      sessionId = body['sessionId'];
+      console.log(sessionId);
+    }
+  });
+  //return sessionId;
+}
+
+function submitAuthCode(email, code, sessionId) {
+  var optionsSubmit = {
+    url: 'https://api.virtru.com/accounts/api/code-activation',
+    headers: {
+      "X-Virtru-Client": 'secure-reader:6.47.0',
+      'origin': 'https://secure.virtru.com',
+      "content-type": "application/json",
+      'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36'
+    },
+    json: {
+      'sessionId': sessionId,
+      'userId': email,
+      'code': code
+    }
+  };
+  request.post(optionsSubmit, (error, response, body) => {
+    console.log(body);
+    if (body['appId']) {
+      settingsPage.webContents.send('new-appid-success');
+      appId = body['appId'];
+      email = email;
+      //store.set('virtru_creds', { email, appId });
+      //refreshCreds();
+      settingsPage.webContents.send('new-creds', [email, body['appId']]);
+    } else {
+      dialog.showErrorBox('Something Went Wrong', 'An error was encountered while submitting your code. Please try again.');
+      settingsPage.webContents.send('code-submit-error');
+
+    }
+
+  });
+}
+
+
+function checkCreds(email, appId) {
+  //refreshCreds();
+  //{ email , appId } = store.get('virtru_creds');
+  //console.log(store.get('virtru_creds'));
+  var options = {
+    url: 'https://api.virtru.com/accounts/api/org',
+    headers: {
+      'Origin': 'https://secure.virtru.com',
+      'Authorization': `Virtru [["${appId}","${email}"]]`,
+      'Content-Type': 'application/json',
+      'X-Virtru-Client': 'tfoskett-desktop-encrypt:1.0.0'
+    }
+  };
+  request(options, (error, response, body) => {
+    if (!error && response.statusCode == 200) {
+      console.log(`Valid appId / email combo.`);
+    } else {
+      console.log(`Invalid appId / email combo`);
+      console.log(JSON.parse(body));
+      dialog.showErrorBox('New Credentials Required', 'You have not provided a valid email/appId bundle, or your existing credentials have expired. Open the Settings page to add new credentials.');
+      win.webContents.send('invalid-appid');
+    }
+  });
+}
+
+// This method will be called when Electron has finished
+// initialization and is ready to create browser windows.
+// Some APIs can only be used after this event occurs.
+app.on('ready', () => {
+  createWindow();
+  checkCreds(email, appId);
+})
+
+// Quit when all windows are closed.
+app.on('window-all-closed', () => {
+  // On macOS it is common for applications and their menu bar
+  // to stay active until the user quits explicitly with Cmd + Q
+  //if (process.platform !== 'darwin') {
+  app.quit()
+});
+
+
+app.on('activate', () => {
+  // On macOS it's common to re-create a window in the app when the
+  // dock icon is clicked and there are no other windows open.
+  if (win === null) {
+    createWindow()
+  }
+
+})
+
+// In this file you can include the rest of your app's specific main process
+// code. You can also put them in separate files and require them here.
+
+ipcMain.on('settings-clicked', (event) => {
+  if (settingsPage == null) {
+    createSettings();
+  }
+})
+
+
+ipcMain.on('settings-page-loaded', (event) => {
+  event.sender.send('creds-from-file', [store.get('virtru_creds'), store.get('save_location')]);
+  //console.log(store.get('virtru_creds'));
+})
+
+ipcMain.on('app-id-request', (event, args) => {
+  requestAuthCode(args[0]);
+  //console.log(requestAuthCode(args[0]));
+})
+
+ipcMain.on('code-submit', (event, args) => {
+  var email = args[0];
+  var code = args[1];
+  submitAuthCode(email, code, sessionId);
+})
+
+ipcMain.on('save-settings', (event, args) => {
+  email = args[0];
+  appId = args[1];
+  var storageLoc = args[2];
+  store.set('virtru_creds', { email, appId });
+  store.set('save_location', storageLoc);
+  refreshCreds();
+  settingsPage.close();
+})
+
+ipcMain.on('save-directory-clicked', (event) => {
+  var directory = dialog.showOpenDialogSync(settingsPage, {
+    properties: ['openDirectory']
+  });
+  console.log(directory);
+  var path = directory[0];
+  //store.set('save_location', path);
+  //path = store.get('save_location');
+  event.sender.send('save-directory-selected', path);
+})
+
+
+var disableResharing = false;
+var watermarking = false;
+var expiration = false;
+var expirationTime = '';
+var expirationDate = new Date();
+var authorizedUsers = '';
+var usersArray = [];
+
+ipcMain.on('disable-reshare-on', (event) => {
+  disableResharing = true;
+  console.log('Disable Resharing: ' + disableResharing);
+})
+
+ipcMain.on('disable-reshare-off', (event) => {
+  disableResharing = false;
+  console.log('Disable Resharing: ' + disableResharing);
+})
+
+ipcMain.on('watermark-on', (event) => {
+  watermarking = true;
+  console.log('Watermarking: ' + watermarking);
+})
+
+ipcMain.on('watermark-off', (event) => {
+  watermarking = false;
+  console.log('Watermarking: ' + watermarking);
+})
+
+ipcMain.on('expire-on', (event) => {
+  expiration = true;
+  console.log('Expiration: ' + expiration);
+})
+
+ipcMain.on('expire-off', (event) => {
+  expiration = false;
+  console.log('Expiration: ' + expiration);
+})
+
+ipcMain.on('exp-date', (event, args) => {
+  expirationDate = new Date(args);
+  var isoDate = expirationDate.toISOString();
+  expirationDate = isoDate;
+  expirationTime = expirationDate - Date.now();
+  console.log('expirationDate: ' + expirationDate);
+  console.log(`Expires in ${expirationTime} ms.`);
+})
+
+ipcMain.on('authorized-users', (event, args) => {
+  if (authorizedUsers == '') {
+    usersArray.push(email);
+  }
+  else {
+  authorizedUsers = args;
+  console.log('Authorized Users: ' + authorizedUsers);
+  usersArray = authorizedUsers.split(", ");
+  }
+  console.log('Line 240: ' + usersArray);
+})
+
+ipcMain.on('reset-all', () => {
+  disableResharing = false;
+  watermarking = false;
+  expiration = false;
+  expirationTime = '';
+  expirationDate = new Date();
+  authorizedUsers = '';
+  usersArray = [];
+})
+
+function buildPolicy() {
+  var policy = new Virtru.PolicyBuilder();
+
+  if (disableResharing == true) {
+    policy.disableReshare();
+  }
+
+  if (watermarking == true) {
+    policy.enableWatermarking();
+  }
+
+  if (expiration == true) {
+    //policy.enableExpirationDeadlineFromNow(expirationTime);
+    policy.enableExpirationDeadline(expirationDate);
+  }
+
+  //console.log(policy);
+  return policy.build();
+}
+
+
+async function encrypt(filePath, fileName, policy, authUsers) {
+  //const client = new Virtru.Client({email, appId});
+  const encryptParams = new Virtru.EncryptParamsBuilder()
+    .withFileSource(filePath)
+    .withDisplayFilename(fileName)
+    .withPolicy(policy)
+    .withUsersWithAccess(authUsers)
+    .build();
+  ct = await client.encrypt(encryptParams);
+
+  var i = 1;
+  var array = fileName.split('.');
+  var outFileName = `${array[0]}.${array[1]}`;
+  while (fs.existsSync(`${store.get('save_location')}/${outFileName}.tdf3.html`)) {
+    outFileName = `${array[0]} (${i}).${array[1]}`;
+    i++;
+  }
+
+  await ct.toFile(`${store.get('save_location')}/${outFileName}.tdf3.html`);
+}
+
+async function decrypt(filePath, fileName) {
+  //const client = new Virtru.Client({email, appId});
+  const decryptParams = new Virtru.DecryptParamsBuilder()
+    .withFileSource(filePath)
+    .build();
+  const stream = await client.decrypt(decryptParams);
+
+  var i=1;
+  var array = fileName.split('.');
+  var outFileName = `${array[0]}.${array[1]}`;
+  console.log('outFileName: ' + outFileName)
+  while (fs.existsSync(`${store.get('save_location')}/${outFileName}`)) {
+    outfileName = `${array[0]} (${i}).${array[1]}`;
+    i++;
+  }
+  stream.toFile(`${store.get('save_location')}/${outFileName}`);
+}
+
+
+ipcMain.on('open-file-dialog', async (event) => {
+
+  var paths = dialog.showOpenDialogSync(win, {
+    properties: ['openFile', 'multiSelections']
+  });
+  //console.log(paths);
+  var files = [];
+  for (i in paths) {
+    var array = (paths[i]).split("/");
+    var fileName = array[(array.length - 1)];
+    files.push(fileName);
+    console.log('File selected: ' + fileName);
+  }
+
+  var policy = buildPolicy();
+  event.sender.send('selected-directory', files);
+  console.log(`Files: ${files}`);
+
+  var filesSuccess = [];
+  for (i in paths) {
+    var array = (paths[i]).split("/");
+    var fileName = array[(array.length - 1)];
+
+    encrypt(paths[i], fileName, policy, usersArray);
+    filesSuccess.push(fileName);
+    console.log(`${fileName} - Success.`);
+    event.sender.send('successful-encrypt', filesSuccess);
+
+    /*encrypt(paths[i], fileName, usersArray)
+      .then(() => {
+        filesSuccess.push(fileName);
+        console.log(`${fileName} - Success.`);
+        event.sender.send('successful-encrypt', filesSuccess);
+      })
+      */
+  }
+})
+
+ipcMain.on('open-decrypt-dialog', async (event) => {
+  var paths = dialog.showOpenDialogSync(win, {
+    properties: ['openFile', 'multiSelections']
+  });
+  var files = [];
+  for (i in paths) {
+    var array = (paths[i]).split("/");
+    var fileName = array[(array.length - 1)];
+    files.push(fileName);
+    console.log('File selected: ' + fileName);
+  }
+  event.sender.send('selected-decrypt-files', files);
+  console.log(`Files: ${files}`);
+
+  var filesSuccess = [];
+  for (i in paths) {
+    var array = (paths[i]).split("/");
+    var fileName = array[(array.length - 1)];
+
+    decrypt(paths[i], fileName);
+    filesSuccess.push(fileName);
+    console.log(`${fileName} - Success.`);
+    event.sender.send('successful-decrypt', filesSuccess);
+  }
+})
