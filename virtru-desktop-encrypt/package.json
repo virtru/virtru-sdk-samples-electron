@@ -1,0 +1,18 @@
+{
+  "name": "virtru-electron-encrypt",
+  "version": "1.0.0",
+  "description": "Electron app to encrypt files locally with the Virtru SDK",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "Trevor Foskett",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^7.1.10"
+  },
+  "dependencies": {
+    "request": "^2.88.0",
+    "virtru-sdk": "^1.6.11"
+  }
+}
