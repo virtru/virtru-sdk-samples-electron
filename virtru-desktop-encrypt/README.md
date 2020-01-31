@@ -23,6 +23,9 @@ When first launched, the app will show an error indicating that you do not have 
 
 You can also specify the directory where you'd like encrypted & decrypted files to be saved.
 
+![Settings-1](https://github.com/virtru/virtru-sdk-samples-electron/blob/master/virtru-desktop-encrypt/images/user-settings-screenshot-1.png)
+![Settings-2](https://github.com/virtru/virtru-sdk-samples-electron/blob/master/virtru-desktop-encrypt/images/user-settings-screenshot-2.png)
+
 #### Encrypt
 * Add authorized users, comma-separated (optional)
 * Select access control policies (optional)
