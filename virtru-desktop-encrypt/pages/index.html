@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Virtru Desktop Encrypt</title>
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+    <link rel="stylesheet" href="../styles/main.css" />
+  </head>
+
+  <body>
+    <div id='settings-buttons' style="align-items:center;display:flex;justify-content:space-between">
+      <button class="button2" id="settings-toggle"><img src="../images/gear.png" /></button>
+      <button class="button2" id="reset-settings"><img src="../images/undo.png" /></button>
+    </div>
+    <center>
+      <h1>Virtru Desktop</h1>
+      <img src="../images/virtru-mark-darkblue-200px.png" class="logo" style="height:80px;width:80px"/>
+      <br />
+      <br />
+      <div class="block form-group" id="add-auth-users" >
+        <label for="auth-users" style="font-family:Raleway; text-align:center" >
+          <div class="virtru-auth-instruction-sub">
+            <strong>Authorized Users</strong><br/>
+            <div style="font-size:85%">(comma-separated)</div>
+          </div>
+        </label>
+        <textarea id="auth-users" rows="2" style="width:60%;text-align:left;font-size:85%;margin-top:5px;margin-bottom:10px;font-family:Raleway" placeholder="User 1, User 2, User 3..."class="virtru-auth-input virtru-auth-input-email"></textarea>
+      </div>
+
+
+      <!--Security Toggles & Switches-->
+      <div id="security-toggles" class="security-toggles" style="width:60%">
+
+                <div id="disable-reshare" style="align-items:center;display:flex;justify-content:space-between">
+                  <span>Disable Re-sharing</span>
+                  <label class="switch">
+                  <input type="checkbox" id="disable-reshare-toggle">
+                  <span class="slider round"></span>
+                  </label>
+                </div>
+                <br />
+                <div id="watermark"style="align-items:center;display:flex;justify-content:space-between">
+                  <span>Watermarking</span>
+                  <label class="switch">
+                  <input type="checkbox" id="watermark-toggle">
+                  <span class="slider round"></span>
+                  </label>
+                </div>
+                <br />
+                <div id="expiration"style="align-items:center;display:flex;justify-content:space-between">
+                  <span>Expiration</span>
+                  <label class="switch">
+                  <input type="checkbox" id="expiration-toggle">
+                  <span class="slider round"></span>
+                  </label>
+                </div>
+                <!--Options for expiration timeframes.  Hidden until expiration enabled.-->
+                <div id="expiration-date-picker" class="center"style="display:none;border-radius:6px;margin:5px;padding:5px;padding-top:-5px">
+                  <form style="font-size:80%;align-items:center;display:flex;justify-content:space-between">
+                    Expire on:<input type="date" id="expiration-date" style="font-family:Raleway;width:110px;font-size:80%">
+                    <!--<input type="submit" class="button1" style="font-size:60%;width:60px;height:20px">-->
+                  </form>
+                </div>
+
+              </div>
+            </div>
+
+      <div>
+        <button class="button1" id="select-files" style="font-family:Raleway">Select File(s) to Encrypt</button>
+      </div><br />
+
+      <div id="select-directory" class="selected-files">
+
+      </div>
+      <br />
+
+      <div>
+        <button class="button1" id="select-files-decrypt" style="font-family:Raleway">Select File(s) to Decrypt</button>
+      </div>
+      <div id="select-decryptions" class="selected-files">
+
+      </div>
+
+
+      <!--<div id='drag-file-link' class='drag-file'>-->
+        <!--<p class='center'>
+          Drag your file here.
+        </p>-->
+
+
+  </body>
+
+  <script src="../scripts/renderer.js"></script>
+</html>
