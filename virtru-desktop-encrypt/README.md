@@ -1,17 +1,17 @@
-#Virtru Desktop Encrypt App
+# Virtru Desktop Encrypt App
 
-#####Written in nodejs using Electron
+##### Written in nodejs using Electron
 
-###Install
+### Install
 * Clone repo
 * `npm install electron --save-dev`
 * `npm install virtru-sdk`
 * `npm install request`
 
-###Run
+### Run
 * `npm start`
 
-###Usage
+### Usage
 This app has three main functions:
 * Encrypt (with security controls)
 * Decrypt
@@ -21,14 +21,14 @@ When first launched, the app will show an error indicating that you do not have 
 
 You can also specify the directory where you'd like encrypted & decrypted files to be saved.
 
-####Encrypt
+#### Encrypt
 * Add authorized users, comma-separated (optional)
 * Select access control policies (optional)
 * Click "Select File(s) to Encrypt"
   * Multiple selections are supported
 * File(s) will be encrypted and saved to the specified location (or to source directory if none specified)
 
-####Decrypt
+#### Decrypt
 * Click "Select File(s) to Decrypt"
   * Multiple selections are supported
 * File(s) will be decrypted and saved to the specified location (or to source directory if none specified)
