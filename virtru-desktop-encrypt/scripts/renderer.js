@@ -84,6 +84,11 @@ expirationDateField.addEventListener("change", (event) => {
   ipcRenderer.send('exp-date', dateEntered);
 })
 
+
+document.addEventListener('DOMContentLoaded', () => {
+  ipcRenderer.send('main-page-loaded');
+})
+
 // Reset function.
 function resetAll() {
   document.getElementById('auth-users').value = '';
