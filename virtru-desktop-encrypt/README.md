@@ -2,9 +2,6 @@
 
 #### Written in nodejs using Electron
 
-![Main Window](./images/main-window-screenshot.png)
-
-![Settings Page](./images/userSettings.png)
 
 ### Prerequisites
 * Node v12+
@@ -19,6 +16,9 @@
 * `npm start`
 
 ### Usage
+
+![Main Window](./images/main-window-screenshot.png)
+
 This app has two main functions:
 * Encrypt (with security controls)
 * Decrypt
@@ -36,6 +36,8 @@ When first launched, the app will show an error indicating that you do not have 
   * `~/.config/virtru-electron-encrypt`
 
 You can also specify the directory where you'd like encrypted & decrypted files to be saved from the settings page.
+
+![Settings Page](./images/userSettings.png)
 
 #### Encrypt
 * Add authorized users, comma-separated (optional)
