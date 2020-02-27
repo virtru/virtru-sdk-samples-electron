@@ -36,8 +36,8 @@ function createWindow () {
 
   // Create the browser window.
   win = new BrowserWindow({
-    width: 400,//width,
-    height: 700,//height,
+    width: 400,
+    height: 700,
     webPreferences: {
       nodeIntegration: true
     }
@@ -70,8 +70,6 @@ function createWindow () {
 function createSettings() {
   settingsPage = new BrowserWindow({
     parent: win,
-    //frame: false,
-    //resizable: false,
     width: 500,
     height: 310,
     webPreferences: {
@@ -80,8 +78,6 @@ function createSettings() {
   })
 
   settingsPage.loadFile('./pages/settings.html');
-  //settingsPage.webContent.openDevTools();
-
 
   settingsPage.on('closed', () => {
     settingsPage = null;
@@ -90,11 +86,12 @@ function createSettings() {
 
 let client;
 function getCreds() {
-  //const appId = JSON.parse(fs.readFileSync('.virtru/virtruCreds.json'))['appId'];
-  //const email = JSON.parse(fs.readFileSync('.virtru/virtruCreds.json'))['emailAddress'];
   const { email, appId } = store.get('virtru_creds');
   return [email, appId];
 }
+
+var email = getCreds()[0];
+var appId = getCreds()[1];
 
 function refreshCreds() {
   var [email, appId] = getCreds();
@@ -105,13 +102,6 @@ function refreshCreds() {
 
 refreshCreds();
 
-
-
-
-// Generate the Virtru Client
-
-
-//console.log(getCreds());
 let sessionId;
 function requestAuthCode(email) {
   var optionsRequest = {
@@ -126,11 +116,9 @@ function requestAuthCode(email) {
       'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36'
     }
   };
-    //console.log(optionsRequest);
+
   request.post(optionsRequest, (error, response, body) => {
-    //console.log(error);
-    //console.log(response);
-    //console.log(body);
+
     if (body['error']) {
       dialog.showErrorBox('Too Many Attempts', "You're doing that too much. Please wait 30 minutes before requesting a new AppId.");
       settingsPage.webContents.send('max-codes-error');
@@ -139,7 +127,6 @@ function requestAuthCode(email) {
       console.log(sessionId);
     }
   });
-  //return sessionId;
 }
 
 function submitAuthCode(email, code, sessionId) {
@@ -163,23 +150,16 @@ function submitAuthCode(email, code, sessionId) {
       settingsPage.webContents.send('new-appid-success');
       appId = body['appId'];
       email = email;
-      //store.set('virtru_creds', { email, appId });
-      //refreshCreds();
       settingsPage.webContents.send('new-creds', [email, body['appId']]);
     } else {
       dialog.showErrorBox('Something Went Wrong', 'An error was encountered while submitting your code. Please try again.');
       settingsPage.webContents.send('code-submit-error');
-
     }
-
   });
 }
 
 
 function checkCreds(email, appId) {
-  //refreshCreds();
-  //{ email , appId } = store.get('virtru_creds');
-  //console.log(store.get('virtru_creds'));
   var options = {
     url: 'https://api.virtru.com/accounts/api/org',
     headers: {
@@ -206,7 +186,6 @@ function checkCreds(email, appId) {
 // Some APIs can only be used after this event occurs.
 app.on('ready', () => {
   createWindow();
-  checkCreds(email, appId);
 })
 
 // Quit when all windows are closed.
@@ -230,6 +209,10 @@ app.on('activate', () => {
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
 
+ipcMain.on('main-page-loaded', (event) => {
+  checkCreds(email, appId);
+})
+
 ipcMain.on('settings-clicked', (event) => {
   if (settingsPage == null) {
     createSettings();
@@ -239,12 +222,10 @@ ipcMain.on('settings-clicked', (event) => {
 
 ipcMain.on('settings-page-loaded', (event) => {
   event.sender.send('creds-from-file', [store.get('virtru_creds'), store.get('save_location')]);
-  //console.log(store.get('virtru_creds'));
 })
 
 ipcMain.on('app-id-request', (event, args) => {
   requestAuthCode(args[0]);
-  //console.log(requestAuthCode(args[0]));
 })
 
 ipcMain.on('code-submit', (event, args) => {
@@ -268,10 +249,11 @@ ipcMain.on('save-directory-clicked', (event) => {
     properties: ['openDirectory']
   });
   console.log(directory);
-  var path = directory[0];
-  //store.set('save_location', path);
-  //path = store.get('save_location');
-  event.sender.send('save-directory-selected', path);
+  if (directory) {
+    var path = directory[0];
+    event.sender.send('save-directory-selected', path);
+  }
+
 })
 
 
@@ -356,17 +338,14 @@ function buildPolicy() {
   }
 
   if (expiration == true) {
-    //policy.enableExpirationDeadlineFromNow(expirationTime);
     policy.enableExpirationDeadline(expirationDate);
   }
 
-  //console.log(policy);
   return policy.build();
 }
 
 
 async function encrypt(filePath, fileName, policy, authUsers) {
-  //const client = new Virtru.Client({email, appId});
   const encryptParams = new Virtru.EncryptParamsBuilder()
     .withFileSource(filePath)
     .withDisplayFilename(fileName)
@@ -387,7 +366,6 @@ async function encrypt(filePath, fileName, policy, authUsers) {
 }
 
 async function decrypt(filePath, fileName) {
-  //const client = new Virtru.Client({email, appId});
   const decryptParams = new Virtru.DecryptParamsBuilder()
     .withFileSource(filePath)
     .build();
@@ -410,7 +388,6 @@ ipcMain.on('open-file-dialog', async (event) => {
   var paths = dialog.showOpenDialogSync(win, {
     properties: ['openFile', 'multiSelections']
   });
-  //console.log(paths);
   var files = [];
   for (i in paths) {
     var array = (paths[i]).split("/");
@@ -432,14 +409,6 @@ ipcMain.on('open-file-dialog', async (event) => {
     filesSuccess.push(fileName);
     console.log(`${fileName} - Success.`);
     event.sender.send('successful-encrypt', filesSuccess);
-
-    /*encrypt(paths[i], fileName, usersArray)
-      .then(() => {
-        filesSuccess.push(fileName);
-        console.log(`${fileName} - Success.`);
-        event.sender.send('successful-encrypt', filesSuccess);
-      })
-      */
   }
 })
 
