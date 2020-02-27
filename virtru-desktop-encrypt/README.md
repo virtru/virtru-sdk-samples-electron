@@ -6,9 +6,9 @@
 
 ### Install
 * `git clone https://github.com/virtru/virtru-sdk-samples-electron.git`
+* `cd virtru-desktop-encrypt`
 * `npm install electron --save-dev`
-* `npm install virtru-sdk`
-* `npm install request`
+* `npm install -r requirements`
 
 ### Run
 * `npm start`
