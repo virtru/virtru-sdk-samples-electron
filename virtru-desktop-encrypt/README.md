@@ -14,17 +14,16 @@
 * `npm start`
 
 ### Usage
-This app has three main functions:
+This app has two main functions:
 * Encrypt (with security controls)
 * Decrypt
-* Generate AppID
+And two helper functions:
+* Input & save credentials (email & appId)
+* Set & save output directory
 
-When first launched, the app will show an error indicating that you do not have a valid appid / email combination.  Open the Settings menu via the gear icon in the top right to either input your own enail address and appid manually, or enter your email address and click "Generate New AppID" to trigger a new email code loop.  If you use the loop, grab the code from your email and put it into the prompt.
+When first launched, the app will show an error indicating that you do not have a valid appid / email combination.  Open the Settings menu via the gear icon in the top right to input your own enail address and appid.
 
-You can also specify the directory where you'd like encrypted & decrypted files to be saved.
-
-![Settings-1](https://github.com/virtru/virtru-sdk-samples-electron/blob/master/virtru-desktop-encrypt/images/user-settings-screenshot-1.png)
-![Settings-2](https://github.com/virtru/virtru-sdk-samples-electron/blob/master/virtru-desktop-encrypt/images/user-settings-screenshot-2.png)
+You can also specify the directory where you'd like encrypted & decrypted files to be saved from the settings page.
 
 #### Encrypt
 * Add authorized users, comma-separated (optional)
