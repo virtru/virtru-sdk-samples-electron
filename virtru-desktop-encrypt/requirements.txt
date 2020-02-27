@@ -1,2 +1,3 @@
+electron --save-dev
 virtru-sdk
 request
