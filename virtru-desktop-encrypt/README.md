@@ -4,7 +4,7 @@
 
 ![Main Window](https://github.com/virtru/virtru-sdk-samples-electron/blob/master/virtru-desktop-encrypt/images/main-window-screenshot.png)
 
-![Settings Page](https://github.com/virtru/virtru-sdk-samples-electron/blob/master/virtru-desktop-encrypt/images/userSettings.png |width=250)
+![Settings Page](https://github.com/virtru/virtru-sdk-samples-electron/blob/master/virtru-desktop-encrypt/images/userSettings.png)
 
 ### Prerequisites
 * Node v12+
