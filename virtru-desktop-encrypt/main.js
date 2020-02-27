@@ -357,12 +357,21 @@ async function encrypt(filePath, fileName, policy, authUsers) {
   var i = 1;
   var array = fileName.split('.');
   var outFileName = `${array[0]}.${array[1]}`;
-  while (fs.existsSync(`${store.get('save_location')}/${outFileName}.tdf3.html`)) {
-    outFileName = `${array[0]} (${i}).${array[1]}`;
-    i++;
+
+  if (store.get('save_location') !== '[object Object]') {
+    while (fs.existsSync(`${store.get('save_location')}/${outFileName}.tdf3.html`)) {
+      outFileName = `${array[0]} (${i}).${array[1]}`;
+      i++;
+    }
+    await ct.toFile(`${store.get('save_location')}/${outFileName}.tdf3.html`);
+  } else {
+    while (fs.existsSync(`${filePath.replace(fileName, outFileName)}.tdf3.html`)) {
+      outFileName = `${array[0]} (${i}).${array[1]}`;
+      i++;
+    }
+    await ct.toFile(`${filePath.replace(fileName, outFileName)}.tdf3.html`);
   }
 
-  await ct.toFile(`${store.get('save_location')}/${outFileName}.tdf3.html`);
 }
 
 async function decrypt(filePath, fileName) {
@@ -375,11 +384,21 @@ async function decrypt(filePath, fileName) {
   var array = fileName.split('.');
   var outFileName = `${array[0]}.${array[1]}`;
   console.log('outFileName: ' + outFileName)
-  while (fs.existsSync(`${store.get('save_location')}/${outFileName}`)) {
-    outfileName = `${array[0]} (${i}).${array[1]}`;
-    i++;
+
+  //stream.toFile(`${store.get('save_location')}/${outFileName}`);
+  if (store.get('save_location') !== '[object Object]') {
+    while (fs.existsSync(`${store.get('save_location')}/${outFileName}`)) {
+      outfileName = `${array[0]} (${i}).${array[1]}`;
+      i++;
+    }
+    stream.toFile(`${store.get('save_location')}/${outFileName}.tdf3.html`);
+  } else {
+    while (fs.existsSync(`${filePath.replace(fileName, outFileName)}.tdf3.html`)) {
+      outFileName = `${array[0]} (${i}).${array[1]}`;
+      i++;
+    }
+    stream.toFile(`${filePath.replace(fileName, outFileName)}.tdf3.html`);
   }
-  stream.toFile(`${store.get('save_location')}/${outFileName}`);
 }
 
 
