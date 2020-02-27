@@ -17,6 +17,7 @@
 This app has two main functions:
 * Encrypt (with security controls)
 * Decrypt
+
 And two helper functions:
 * Input & save credentials (email & appId)
 * Set & save output directory
