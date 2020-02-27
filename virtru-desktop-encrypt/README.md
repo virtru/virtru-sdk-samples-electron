@@ -6,7 +6,6 @@
 
 ### Prerequisites
 * Node v12+
-* Virtru Nodejs SDK
 
 ### Install
 * `git clone https://github.com/virtru/virtru-sdk-samples-electron.git`
