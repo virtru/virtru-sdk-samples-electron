@@ -4,10 +4,14 @@
 
 ![Main Window](https://github.com/virtru/virtru-sdk-samples-electron/blob/master/virtru-desktop-encrypt/images/main-window-screenshot.png)
 
+### Prerequisites
+* Node v12+
+* Virtru Nodejs SDK
+
 ### Install
 * `git clone https://github.com/virtru/virtru-sdk-samples-electron.git`
+* `cd virtru-sdk-samples-electron`
 * `cd virtru-desktop-encrypt`
-* `npm install electron --save-dev`
 * `npm install -r requirements`
 
 ### Run
