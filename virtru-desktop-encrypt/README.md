@@ -5,7 +5,7 @@
 ![Main Window](https://github.com/virtru/virtru-sdk-samples-electron/blob/master/virtru-desktop-encrypt/images/main-window-screenshot.png)
 
 ### Install
-* Clone repo
+* `git clone https://github.com/virtru/virtru-sdk-samples-electron.git`
 * `npm install electron --save-dev`
 * `npm install virtru-sdk`
 * `npm install request`
