@@ -4,8 +4,6 @@
 
 ![Main Window](https://github.com/virtru/virtru-sdk-samples-electron/blob/master/virtru-desktop-encrypt/images/main-window-screenshot.png)
 
-![Settings Page](https://github.com/virtru/virtru-sdk-samples-electron/blob/master/virtru-desktop-encrypt/images/userSettings.png)
-
 ### Prerequisites
 * Node v12+
 
@@ -42,3 +40,7 @@ You can also specify the directory where you'd like encrypted & decrypted files 
 * Click "Select File(s) to Decrypt"
   * Multiple selections are supported
 * File(s) will be decrypted and saved to the specified location (or to source directory if none specified)
+
+
+
+![Settings Page](https://github.com/virtru/virtru-sdk-samples-electron/blob/master/virtru-desktop-encrypt/images/userSettings.png)
