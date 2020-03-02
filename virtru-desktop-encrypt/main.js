@@ -102,61 +102,7 @@ function refreshCreds() {
 
 refreshCreds();
 
-let sessionId;
-function requestAuthCode(email) {
-  var optionsRequest = {
-    url: 'https://api.virtru.com/accounts/api/code-login',
-    json: {
-      "userId": email
-    },
-    headers: {
-      "X-Virtru-Client": 'secure-reader:6.47.0',
-      'origin': 'https://secure.virtru.com',
-      "content-type": "application/json",
-      'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36'
-    }
-  };
 
-  request.post(optionsRequest, (error, response, body) => {
-
-    if (body['error']) {
-      dialog.showErrorBox('Too Many Attempts', "You're doing that too much. Please wait 30 minutes before requesting a new AppId.");
-      settingsPage.webContents.send('max-codes-error');
-    } else {
-      sessionId = body['sessionId'];
-      console.log(sessionId);
-    }
-  });
-}
-
-function submitAuthCode(email, code, sessionId) {
-  var optionsSubmit = {
-    url: 'https://api.virtru.com/accounts/api/code-activation',
-    headers: {
-      "X-Virtru-Client": 'secure-reader:6.47.0',
-      'origin': 'https://secure.virtru.com',
-      "content-type": "application/json",
-      'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36'
-    },
-    json: {
-      'sessionId': sessionId,
-      'userId': email,
-      'code': code
-    }
-  };
-  request.post(optionsSubmit, (error, response, body) => {
-    console.log(body);
-    if (body['appId']) {
-      settingsPage.webContents.send('new-appid-success');
-      appId = body['appId'];
-      email = email;
-      settingsPage.webContents.send('new-creds', [email, body['appId']]);
-    } else {
-      dialog.showErrorBox('Something Went Wrong', 'An error was encountered while submitting your code. Please try again.');
-      settingsPage.webContents.send('code-submit-error');
-    }
-  });
-}
 
 
 function checkCreds(email, appId) {
@@ -224,15 +170,7 @@ ipcMain.on('settings-page-loaded', (event) => {
   event.sender.send('creds-from-file', [store.get('virtru_creds'), store.get('save_location')]);
 })
 
-ipcMain.on('app-id-request', (event, args) => {
-  requestAuthCode(args[0]);
-})
 
-ipcMain.on('code-submit', (event, args) => {
-  var email = args[0];
-  var code = args[1];
-  submitAuthCode(email, code, sessionId);
-})
 
 ipcMain.on('save-settings', (event, args) => {
   email = args[0];
