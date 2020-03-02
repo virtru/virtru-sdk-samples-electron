@@ -112,7 +112,7 @@ function checkCreds(email, appId) {
       'Origin': 'https://secure.virtru.com',
       'Authorization': `Virtru [["${appId}","${email}"]]`,
       'Content-Type': 'application/json',
-      'X-Virtru-Client': 'tfoskett-desktop-encrypt:1.0.0'
+      'X-Virtru-Client': `${email}-desktop-encrypt:1.0.0`
     }
   };
   request(options, (error, response, body) => {
