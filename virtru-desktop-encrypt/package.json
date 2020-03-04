@@ -7,7 +7,7 @@
     "start": "electron ."
   },
   "author": "Trevor Foskett",
-  "license": "ISC",
+  "license": "SEE LICENSE IN LICENSE.md",
   "devDependencies": {
     "electron": "^7.1.10"
   },
