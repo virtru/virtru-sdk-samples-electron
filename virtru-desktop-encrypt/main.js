@@ -244,7 +244,7 @@ ipcMain.on('exp-date', (event, args) => {
 
 ipcMain.on('authorized-users', (event, args) => {
   if (authorizedUsers == '') {
-    usersArray.push(email);
+    usersArray.push(email, args);
   }
   else {
   authorizedUsers = args;
