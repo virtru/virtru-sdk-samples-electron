@@ -1,4 +1,4 @@
-# Virtru Desktop Encrypt App
+# Virtru Drive File Sync
 
 #### Written in nodejs using Electron
 
