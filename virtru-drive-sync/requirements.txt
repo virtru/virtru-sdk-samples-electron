@@ -1,0 +1,5 @@
+electron --save-dev
+virtru-sdk
+request
+chokidar
+googleapis@39 --save
