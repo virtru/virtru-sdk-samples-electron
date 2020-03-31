@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html style="color:black;background:#d9d9d9;width:304px;margin:0">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      body {
+        overflow-x: hidden;
+      }
+    </style>
+    <title>Settings</title>
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+    <link rel="stylesheet" href="../styles/main.css" />
+  </head>
+  <body style='padding:10px'>
+    <h1 style="height:20px;margin-top:10px;font-size:17px">Virtru Secure File Sync for Drive</h1>
+    <h2>User Settings</h2>
+    <div id='settings-input-box'>
+      <form>
+        Email Address:<br />
+        <input type="text" id="email-address-settings" style="width:150px" /><br />
+        AppID:<br />
+        <input type="password" id="appid-settings" style="width:250px"/>
+        <br />
+        <span style="font-family:Raleway;align-items:center;display:flex;justify-content:space-between;width:95%;margin-bottom:0">
+        <span class="tooltip">Sync Folder:<span class="tooltiptext" style="width:150px;font-size:70%;text-align:left;padding:4px">Files added to this folder will be encrypted and synced to Google Drive.</span></span>
+        <button type="button"class="button3" id="select-save-location" style="font-size:60%;height:8px;width:60px;margin-top:2px;padding-top:2px;padding-bottom:12px;box-shadow:none">Select...</button>
+        </span>
+        <input type="text" id="save-location"style="width:250px"/>
+      </form>
+    </div>
+    <br />
+
+      <div style="font-family:Raleway;align-items:center;display:flex;justify-content:space-between">
+        <button class="button3" id="save-close" >Save</button>
+      </div>
+
+  </body>
+  <script src="../scripts/settings.js"></script>
+</html>
