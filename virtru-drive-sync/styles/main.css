@@ -1,0 +1,334 @@
+@font-face {
+  font-family: Raleway;
+  src: url("./fonts/Raleway-v4020-Regular.otf");
+}
+
+html {
+  background-color: #174EB6;
+  font-family: Raleway;
+  color: white;
+}
+
+.logo {
+  background-color: #F5F5F5;
+  width: 150px;
+  border-color: #1E3AB9;
+  border-style: solid;
+  border-radius: 200px;
+}
+
+.option {
+
+  font-size: 30px;
+  /*padding-top: 10px;*/
+}
+
+.container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: stretch;
+}
+
+.button1 {
+    background-color: #174EB6;
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+    border: 2px solid white;
+    border-radius: 25px;
+    color: white;
+    padding: 10px;
+    /*padding: 15px 32px;*/
+    /*text-align: center;*/
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    width: 200px;
+}
+
+
+
+.button1:hover {
+    box-shadow: none;
+
+    background-color: white;
+    color: #174EB6;
+}
+
+
+
+
+.button2 {
+
+    background-color: #174EB6;
+    border: 1px;
+    border-style: solid;
+    border-color: white;
+    border-radius: 18px;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 5px;
+    padding-bottom: 4px;
+    text-align: center;
+    text-decoration: none;
+
+    font-size: 10px;
+}
+
+.button2:hover {
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+
+    color: #1E3AB9;
+}
+
+.button3 {
+    background-color: #174EB6;
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+    border: 2px solid white;
+    border-radius: 10px;
+    color: white;
+    padding: 2px;
+    /*padding: 15px 32px;*/
+    /*text-align: center;*/
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    width: 110px;
+    height: 25px;
+}
+
+
+
+.button3:hover {
+    /*box-shadow: none;*/
+
+    background-color: white;
+    color: #174EB6;
+}
+
+
+/* switches & sliders */
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 54px;
+    height: 28px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+
+}
+
+input:checked + .slider {
+    background-color: #B2D6FF;
+
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+    background-color:  #174EB6;
+
+}
+
+
+/* Rounded sliders */
+
+.slider.round {
+    border-radius: 34px;
+
+
+}
+
+.slider.round:before {
+    border-radius: 50%;
+    background-color: #174EB6;
+
+}
+
+.security-toggles {
+    font-family: Raleway;
+    margin-bottom: 10px;
+    line-height: .9em;
+    font-size: .9em;
+    text-align: left;
+    font-weight: 600;
+    color: white;
+    width: 40%;
+}
+
+
+/** Radio buttons for Expiration time frames **/
+
+
+/* The container */
+
+.container {
+    display: block;
+    position: relative;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 22px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    height: 4px;
+}
+
+
+/* Hide the browser's default radio button */
+
+.container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 16px;
+}
+
+
+/* Create a custom radio button */
+
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 16px;
+    width: 16px;
+    background-color: #eee;
+    border-radius: 50%;
+}
+
+
+/* On mouse-over, add a grey background color */
+
+.container:hover input ~ .checkmark {
+    background-color: #ccc;
+}
+
+
+/* When the radio button is checked, add a blue background */
+
+.container input:checked ~ .checkmark {
+    background-color: #001E4A;
+}
+
+
+/* Create the indicator (the dot/circle - hidden when not checked) */
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+
+/* Show the indicator (dot/circle) when checked */
+
+.container input:checked ~ .checkmark:after {
+    display: block;
+}
+
+
+/* Style the indicator (dot/circle) */
+
+.container .checkmark:after {
+    top: 6px;
+    left: 6px;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: white;
+}
+
+.expiration-choices {
+    font-family: Raleway;
+    margin-bottom: 0px;
+    line-height: .9em;
+    font-size: .9em;
+    text-align: left;
+    font-weight: 400;
+    color: white;
+}
+
+
+/* AUTO EXPANDING TEXT BOX */
+
+
+textarea{
+  display: block;
+  box-sizing: padding-box;
+  overflow: hidden;
+
+  padding: 10px;
+  width: 250px;
+  font-size: 14px;
+  margin: 50px auto;
+  border-radius: 6px;
+  box-shadow: 2px 2px 8px rgba(black, .3);
+  border: 0;
+}
+
+
+<style>
+/* Tooltip container */
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+}
+
+/* Tooltip text */
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+  box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+
+  /* Position the tooltip text - see examples below! */
+  position: absolute;
+  z-index: 1;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
