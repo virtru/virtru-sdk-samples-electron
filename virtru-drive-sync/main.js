@@ -154,16 +154,6 @@ ipcMain.on('settings-page-loaded', (event) => {
   event.sender.send('creds-from-file', [store.get('virtru_creds'), store.get('save_location')]);
 })
 
-ipcMain.on('app-id-request', (event, args) => {
-  requestAuthCode(args[0]);
-})
-
-ipcMain.on('code-submit', (event, args) => {
-  var email = args[0];
-  var code = args[1];
-  submitAuthCode(email, code, sessionId);
-})
-
 // Save user settings
 ipcMain.on('save-settings', (event, args) => {
   email = args[0];
