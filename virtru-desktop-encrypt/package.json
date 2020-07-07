@@ -9,7 +9,7 @@
   "author": "Trevor Foskett",
   "license": "SEE LICENSE IN LICENSE.md",
   "devDependencies": {
-    "electron": "^7.1.10"
+    "electron": "^7.2.4"
   },
   "dependencies": {
     "glob": "^7.1.6",
