@@ -15,7 +15,7 @@
   "dependencies": {
     "chokidar": "^3.3.1",
     "googleapis": "^39.2.0",
-    "node-notifier": "^6.0.0",
+    "node-notifier": "^8.0.1",
     "request": "^2.88.2",
     "virtru-sdk": "^1.6.11"
   }
